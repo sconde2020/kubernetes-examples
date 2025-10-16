@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+        - name: webapp
+          image: soul2520/web-app-demo:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: webapp-config
+                  key: DB_URL
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: webapp-config
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_PASSWORD
